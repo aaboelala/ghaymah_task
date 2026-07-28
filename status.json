@@ -1,0 +1,10 @@
+{
+  "status": "healthy",
+  "http_code": 200,
+  "check_timestamp": "2026-07-28T08:26:58Z",
+  "check_latency_ms": 6,
+  "uptime_seconds": 902,
+  "total_requests": 36,
+  "average_latency_ms": 1.41,
+  "last_request_latency_ms": 2.58
+}
