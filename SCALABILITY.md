@@ -6,60 +6,7 @@
 
 تم تصميم المعمارية التالية للاستجابة لـ **15,000 طلب في الثانية (15,000 req/s)** مع توافر عالي (High Availability) وأداء متفوق على منصة **غنيمة**:
 
-![المخطط الهندسي لنظام غنيمة عالي التوسع 15,000 req/s](./ghanimah_architecture_diagram.png)
-
-```mermaid
-flowchart TD
-    subgraph Clients["🌐 المستخدمون والتطبيقات"]
-        U1["📱 Mobile Apps"]
-        U2["💻 Web Browsers"]
-    end
-
-    subgraph EdgeLayer["⚡ Ghanimah Edge Layer"]
-        CDN["Ghanimah Global CDN & DDoS Protection"]
-        DNS["Ghanimah Anycast DNS"]
-    end
-
-    subgraph LBLayer["🔀 Ghanimah Load Balancing Tier"]
-        ALB1["Ghanimah Application Load Balancer (Primary)"]
-        ALB2["Ghanimah Application Load Balancer (Backup)"]
-    end
-
-    subgraph AppCluster["📦 Ghanimah Compute (Stateless Application Cluster)"]
-        direction TB
-        subgraph PodGroup1["Zone A (13 Replicas)"]
-            P1["App Pod 1..13"]
-        end
-        subgraph PodGroup2["Zone B (13 Replicas)"]
-            P2["App Pod 14..26"]
-        end
-        subgraph PodGroup3["Zone C (13 Replicas)"]
-            P3["App Pod 27..39"]
-        end
-    end
-
-    subgraph CacheDB["💾 Caching & Database Tier"]
-        Redis["Ghanimah In-Memory Redis Cache"]
-        DBPrimary[("PostgreSQL Primary (Write)")]
-        DBReplica[("PostgreSQL Replica (Read)")]
-    end
-
-    subgraph StorageLayer["📁 Ghanimah Stateful Storage"]
-        GBS[("Ghanimah Block Storage (NVMe SSD)")]
-    end
-
-    U1 & U2 --> DNS --> CDN
-    CDN --> ALB1 & ALB2
-    ALB1 & ALB2 -->|Round-Robin / Least Connections| PodGroup1 & PodGroup2 & PodGroup3
-    
-    PodGroup1 & PodGroup2 & PodGroup3 -->|Cache Lookups| Redis
-    PodGroup1 & PodGroup2 & PodGroup3 -->|Write Ops| DBPrimary
-    PodGroup1 & PodGroup2 & PodGroup3 -->|Read Ops| DBReplica
-
-    DBPrimary & DBReplica <-->|Persistent Volume Claim (PVC)| GBS
-```
-
----
+![المخطط الهندسي لنظام غنيمة عالي التوسع 15,000 req/s](./architecture.png)
 
 ## 2️⃣ حساب عدد الحاويات المطلوبة (Capacity Planning & Sizing)
 

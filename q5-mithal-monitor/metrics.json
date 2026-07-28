@@ -1,0 +1,107 @@
+[
+    {
+        "timestamp": "2026-07-28T09:59:01.075371",
+        "latency_ms": 1021.86,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 6.92,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 958.41
+        }
+    },
+    {
+        "timestamp": "2026-07-28T10:00:03.486672",
+        "latency_ms": 1078.94,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 7.81,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 875.35
+        }
+    },
+    {
+        "timestamp": "2026-07-28T10:01:05.991518",
+        "latency_ms": 1063.59,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 6.1,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 872.83
+        }
+    },
+    {
+        "timestamp": "2026-07-28T10:02:08.495565",
+        "latency_ms": 1022.08,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 5.8,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 919.46
+        }
+    },
+    {
+        "timestamp": "2026-07-28T10:03:10.815308",
+        "latency_ms": 944.67,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 7.7,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 883.18
+        }
+    },
+    {
+        "timestamp": "2026-07-28T10:04:12.942249",
+        "latency_ms": 809.59,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 5.28,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 849.83
+        }
+    },
+    {
+        "timestamp": "2026-07-28T10:05:15.376909",
+        "latency_ms": 909.74,
+        "status_code": 200,
+        "uptime": true,
+        "dns_lookup_ms": 4.95,
+        "ssl": {
+            "expires_at": "2026-09-15T13:10:47",
+            "days_left": 49
+        },
+        "search": {
+            "status": 200,
+            "response_ms": 803.56
+        }
+    }
+]

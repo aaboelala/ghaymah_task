@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mithal Monitoring Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .cards {
+
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+
+        }
+
+        .card {
+
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, .1);
+
+        }
+
+        .card h3 {
+
+            margin-bottom: 10px;
+            color: #666;
+
+        }
+
+        .value {
+
+            font-size: 32px;
+            font-weight: bold;
+
+        }
+
+        .chart {
+
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, .1);
+            margin-bottom: 30px;
+
+        }
+
+        table {
+
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+
+        }
+
+        th {
+
+            background: #202124;
+            color: white;
+
+        }
+
+        th,
+        td {
+
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+
+        }
+
+        .ok {
+
+            color: green;
+            font-weight: bold;
+
+        }
+
+        .fail {
+
+            color: red;
+            font-weight: bold;
+
+        }
+
+        footer {
+
+            margin-top: 30px;
+            text-align: center;
+            color: #777;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>📈 Mithal Monitoring Dashboard</h1>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>Uptime (24h)</h3>
+
+            <div class="value" id="uptime">--</div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Average Latency</h3>
+
+            <div class="value" id="latency">--</div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>SSL Days Left</h3>
+
+            <div class="value" id="ssl">--</div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Total Checks</h3>
+
+            <div class="value" id="checks">--</div>
+
+        </div>
+
+    </div>
+
+    <div class="chart">
+
+        <canvas id="latencyChart"></canvas>
+
+    </div>
+
+    <h2 style="margin-bottom:15px;">Last 10 Checks</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Time</th>
+                <th>Status</th>
+                <th>Latency</th>
+                <th>DNS</th>
+                <th>SSL</th>
+                <th>Search</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tableBody">
+
+        </tbody>
+
+    </table>
+
+    <footer>
+
+        Refreshes every 60 seconds
+
+    </footer>
+
+    <script>
+
+        let chart;
+
+        async function loadMetrics() {
+
+            const response = await fetch("metrics.json");
+
+            const data = await response.json();
+
+            return data;
+
+        }
+
+        async function render() {
+
+            const data = await loadMetrics();
+
+            if (data.length === 0)
+                return;
+
+            const checks = data.length;
+
+            const uptime = data.filter(x => x.uptime).length;
+
+            const uptimePercent = ((uptime / checks) * 100).toFixed(2);
+
+            document.getElementById("uptime").innerHTML = uptimePercent + "%";
+
+            document.getElementById("checks").innerHTML = checks;
+
+            const avgLatency = (
+
+                data.reduce((a, b) => a + b.latency_ms, 0) / checks
+
+            ).toFixed(2);
+
+            document.getElementById("latency").innerHTML = avgLatency + " ms";
+
+            document.getElementById("ssl").innerHTML =
+
+                data[data.length - 1].ssl.days_left + " days";
+
+
+
+            const lastHour = data.slice(-60);
+
+            const labels = lastHour.map(x => {
+
+                const d = new Date(x.timestamp);
+
+                return d.toLocaleTimeString();
+
+            });
+
+            const latency = lastHour.map(x => x.latency_ms);
+
+            if (chart)
+                chart.destroy();
+
+            chart = new Chart(
+
+                document.getElementById("latencyChart"),
+
+                {
+
+                    type: "line",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [{
+
+                            label: "Latency (ms)",
+
+                            data: latency,
+
+                            fill: false,
+
+                            tension: .2
+
+                        }]
+
+                    },
+
+                    options: {
+
+                        responsive: true
+
+                    }
+
+                }
+
+            );
+
+
+
+            const tbody = document.getElementById("tableBody");
+
+            tbody.innerHTML = "";
+
+            data.slice(-10).reverse().forEach(item => {
+
+                tbody.innerHTML += `
+
+<tr>
+
+<td>${new Date(item.timestamp).toLocaleString()}</td>
+
+<td class="${item.uptime ? 'ok' : 'fail'}">
+
+${item.status_code}
+
+</td>
+
+<td>${item.latency_ms} ms</td>
+
+<td>${item.dns_lookup_ms} ms</td>
+
+<td>${item.ssl.days_left} days</td>
+
+<td>${item.search.response_ms} ms</td>
+
+</tr>
+
+`;
+
+            });
+
+        }
+
+        render();
+
+        setInterval(render, 60000);
+
+    </script>
+
+</body>
+
+</html>
