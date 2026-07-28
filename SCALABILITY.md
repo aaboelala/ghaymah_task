@@ -1,10 +1,12 @@
-# 🚀 قابلية التوسع وتوزيع الأحمال على منصة غيمة (Scalability & Load Balancing)
+# 🚀 قابلية التوسع وتوزيع الأحمال على منصة غنيمة (Scalability & Load Balancing)
 
 ---
 
 ## 1️⃣ المخطط الهندسي للنظام (Architecture Diagram — 15,000 req/s)
 
-تم تصميم المعمارية التالية للاستجابة لـ **15,000 طلب في الثانية (15,000 req/s)** مع توافر عالي (High Availability) وأداء متفوق على منصة غيمة:
+تم تصميم المعمارية التالية للاستجابة لـ **15,000 طلب في الثانية (15,000 req/s)** مع توافر عالي (High Availability) وأداء متفوق على منصة **غنيمة**:
+
+![المخطط الهندسي لنظام غنيمة عالي التوسع 15,000 req/s](./ghanimah_architecture_diagram.png)
 
 ```mermaid
 flowchart TD
@@ -13,17 +15,17 @@ flowchart TD
         U2["💻 Web Browsers"]
     end
 
-    subgraph EdgeLayer["⚡ Ghaymah Edge Layer"]
-        CDN["Ghaymah Global CDN & DDoS Protection"]
-        DNS["Ghaymah Anycast DNS"]
+    subgraph EdgeLayer["⚡ Ghanimah Edge Layer"]
+        CDN["Ghanimah Global CDN & DDoS Protection"]
+        DNS["Ghanimah Anycast DNS"]
     end
 
-    subgraph LBLayer["🔀 Ghaymah Load Balancing Tier"]
-        ALB1["Ghaymah Application Load Balancer (Primary)"]
-        ALB2["Ghaymah Application Load Balancer (Backup)"]
+    subgraph LBLayer["🔀 Ghanimah Load Balancing Tier"]
+        ALB1["Ghanimah Application Load Balancer (Primary)"]
+        ALB2["Ghanimah Application Load Balancer (Backup)"]
     end
 
-    subgraph AppCluster["📦 Ghaymah Compute (Stateless Application Cluster)"]
+    subgraph AppCluster["📦 Ghanimah Compute (Stateless Application Cluster)"]
         direction TB
         subgraph PodGroup1["Zone A (13 Replicas)"]
             P1["App Pod 1..13"]
@@ -37,13 +39,13 @@ flowchart TD
     end
 
     subgraph CacheDB["💾 Caching & Database Tier"]
-        Redis["Ghaymah In-Memory Redis Cache"]
+        Redis["Ghanimah In-Memory Redis Cache"]
         DBPrimary[("PostgreSQL Primary (Write)")]
         DBReplica[("PostgreSQL Replica (Read)")]
     end
 
-    subgraph StorageLayer["📁 Ghaymah Stateful Storage"]
-        GBS[("Ghaymah Block Storage (NVMe SSD)")]
+    subgraph StorageLayer["📁 Ghanimah Stateful Storage"]
+        GBS[("Ghanimah Block Storage (NVMe SSD)")]
     end
 
     U1 & U2 --> DNS --> CDN
@@ -78,7 +80,7 @@ flowchart TD
 
 ---
 
-### 📌 النتيجة والتوزيع على بيئات غيمة:
+### 📌 النتيجة والتوزيع على بيئات غنيمة:
 * **إجمالي عدد الحاويات (Pods):** **39 حاوية** (تضمن معالجة $19,500 \text{ req/s}$ بكفاءة عالية وبدون اختناق).
 * **توزيع الحاويات على مناطق التوافر (Multi-AZ Deployment):**
   * **Zone A:** 13 Pods
@@ -93,11 +95,11 @@ flowchart TD
 
 ## 3️⃣ استراتيجية تقليل الـ Cold Start للحاويات الجديدة
 
-الـ **Cold Start** هو الوقت المستغرق بين إطلاق حاوية جديدة وجاهزيتها التامة لاستقبال الطلبات. لتقليل هذا الوقت لأقل من 1 ثانية في منصة غيمة، نتبع الاستراتيجيات التالية:
+الـ **Cold Start** هو الوقت المستغرق بين إطلاق حاوية جديدة وجاهزيتها التامة لاستقبال الطلبات. لتقليل هذا الوقت لأقل من 1 ثانية في منصة **غنيمة**، نتبع الاستراتيجيات التالية:
 
 ### 1. تصغير حجم صورة الحاوية (Lightweight Docker Images)
-* استخدام صور **Multi-stage Build** مبنية على `scratch` أو `alpine` (حجم الصورة النهائي **~6.7 ميجابايت** كما تم بناؤه في Dockerfile غيمة).
-* الصورة الصغيرة يسهل سحبها من **Ghaymah Container Registry** عبر شبكة غيمة السريعة خلال مسبارات زمنية تقل عن **200ms**.
+* استخدام صور **Multi-stage Build** مبنية على `scratch` أو `alpine` (حجم الصورة النهائي **~6.7 ميجابايت** كما تم بناؤه في Dockerfile غنيمة).
+* الصورة الصغيرة يسهل سحبها من **Ghanimah Container Registry** عبر شبكة غنيمة السريعة خلال مسبارات زمنية تقل عن **200ms**.
 
 ### 2. التوسع الاستباقي (Proactive Pre-Warming & Buffer Capacity)
 * ضبط الحد الأدنى للحاويات عند 39 حاوية، وتفعيل التوسع التلقائي (HPA) فور وصول استهلاك الذاكرة أو المعالج إلى **70%** (بدلاً من 90%).
@@ -122,40 +124,40 @@ flowchart TD
 
 ---
 
-## 4️⃣ استخدام Ghaymah Block Storage للبيانات المستمرة (Stateful Workloads)
+## 4️⃣ استخدام Ghanimah Block Storage للبيانات المستمرة (Stateful Workloads)
 
-تعتمد الحاويات بطبيعتها على كونها **Stateless** (تزول بياناتها بزوال الحاوية). ولتشغيل التطبيقات التي تتطلب حفظ البيانات بشكل دائم (Stateful Workloads مثل قواعد البيانات PostgreSQL و Redis Persistent Logs)، توفر منصة غيمة **Ghaymah Block Storage (GBS)**.
+تعتمد الحاويات بطبيعتها على كونها **Stateless** (تزول بياناتها بزوال الحاوية). ولتشغيل التطبيقات التي تتطلب حفظ البيانات بشكل دائم (Stateful Workloads مثل قواعد البيانات PostgreSQL و Redis Persistent Logs)، توفر منصة غنيمة **Ghanimah Block Storage (GBS)**.
 
 ### 🔑 أهم الميزات والية العمل:
 
 ```text
 ┌────────────────────────┐        Persistent Volume Claim        ┌────────────────────────────┐
-│   PostgreSQL Pod       │ ───────────────────────────────────► │ Ghaymah Block Storage (PV) │
+│   PostgreSQL Pod       │ ───────────────────────────────────► │ Ghanimah Block Storage(PV) │
 │ (Stateful Workload)    │       (Attach NVMe Storage)        │   (High-Performance SSD)   │
 └────────────────────────┘                                     └────────────────────────────┘
 ```
 
 1. **الأداء العالي (High Performance NVMe Volumes):**
-   * يوفر Ghaymah Block Storage أقراص NVMe فائقة السرعة مع معدل عمليات إدخال/إخراج يصل إلى **60,000 IOPS** وتأخير أقل من **1ms**، وهو مثالي لقواعد البيانات الضخمة.
+   * يوفر Ghanimah Block Storage أقراص NVMe فائقة السرعة مع معدل عمليات إدخال/إخراج يصل إلى **60,000 IOPS** وتأخير أقل من **1ms**، وهو مثالي لقواعد البيانات الضخمة.
 
 2. **التكامل عبر Kubernetes Dynamic Provisioning (PVC & StorageClass):**
-   * يتم ربط التخزين بالتطبيقات باستخدام `PersistentVolumeClaim` (PVC) وتحديد `StorageClass: ghaymah-block-nvme`:
+   * يتم ربط التخزين بالتطبيقات باستخدام `PersistentVolumeClaim` (PVC) وتحديد `StorageClass: ghanimah-block-nvme`:
    ```yaml
    apiVersion: v1
    kind: PersistentVolumeClaim
    metadata:
-     name: ghaymah-db-pvc
+     name: ghanimah-db-pvc
    spec:
      accessModes:
        - ReadWriteOnce
-     storageClassName: ghaymah-block-nvme
+     storageClassName: ghanimah-block-nvme
      resources:
        requests:
          storage: 250Gi
    ```
 
 3. **الحماية والاستمرارية (Data Persistence & High Availability):**
-   * عند تعطل الـ Pod المربوط بوحدة التخزين، تقوم منصة غيمة تلقائياً بفصل قرص الـ Block Storage وإعادة ربطه (`Attach/Detach`) بالـ Pod الجديد عبر عقدة أخرى بدون أي فقدان للبيانات.
+   * عند تعطل الـ Pod المربوط بوحدة التخزين، تقوم منصة غنيمة تلقائياً بفصل قرص الـ Block Storage وإعادة ربطه (`Attach/Detach`) بالـ Pod الجديد عبر عقدة أخرى بدون أي فقدان للبيانات.
 
 4. **النسخ الاحتياطي واللقطات الفورية (Snapshots & Replication):**
-   * يدعم Ghaymah Block Storage إنشاء لقطات فورية (Volume Snapshots) دورية بدون التأثير على أداء الخدمة الحية، مع إمكانية استرجاعها فوراً في حالات الطوارئ (Disaster Recovery).
+   * يدعم Ghanimah Block Storage إنشاء لقطات فورية (Volume Snapshots) دورية بدون التأثير على أداء الخدمة الحية، مع إمكانية استرجاعها فوراً في حالات الطوارئ (Disaster Recovery).

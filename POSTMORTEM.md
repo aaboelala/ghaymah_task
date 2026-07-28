@@ -45,15 +45,15 @@
 | الرقم | الإجراء (Action Item) | النوع | الأولوية |
 | :---: | :--- | :---: | :---: |
 | **1** | زيادة الـ Memory Limits الأساسية من `512MiB` إلى `1GiB` وتحديد `Requests` عند `512MiB`. | فوري (Immediate) | 🔴 P0 |
-| **2** | تطبيق سياسة Auto-scaling أفقية (HPA) لمنصة غيمة تعمل على الذاكرة والـ CPU. | متوسط (Medium) | 🔴 P0 |
+| **2** | تطبيق سياسة Auto-scaling أفقية (HPA) لمنصة غنيمة تعمل على الذاكرة والـ CPU. | متوسط (Medium) | 🔴 P0 |
 | **3** | إضافة قواعد تنبيه مبكرة عند تجاوز الذاكرة نسبة 80% وقبل الوصول لـ 100%. | فوري (Immediate) | 🟡 P1 |
 | **4** | إجبار إجراء اختبارات ضغط (Load & Stress Testing) قبل الترقية للإنتاج. | طويل المدى | 🟢 P2 |
 
 ---
 
-## 2️⃣ تصميم سياسة Auto-scaling لمنصة غيمة (Ghaymah Auto-scaling Policy)
+## 2️⃣ تصميم سياسة Auto-scaling لمنصة غنيمة (Ghanimah Auto-scaling Policy)
 
-لتفادي تكرار حادثة `OOMKilled` مستقبلاً، تم تصميم سياسة **Horizontal Pod Autoscaler (HPA)** مخصصة لمنصة غيمة:
+لتفادي تكرار حادثة `OOMKilled` مستقبلاً، تم تصميم سياسة **Horizontal Pod Autoscaler (HPA)** مخصصة لمنصة **غنيمة**:
 
 ### 📐 المكونات والحدود (Policy Configuration)
 
@@ -61,13 +61,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: ghaymah-app-hpa
+  name: ghanimah-app-hpa
   namespace: production
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: ghaymah-sre-api
+    name: ghanimah-sre-api
   minReplicas: 3          # الحد الأدنى لضمان العزل والتوافر العالي
   maxReplicas: 15         # الحد الأقصى للاستجابة للهجمات أو الضغط العالي
   metrics:
@@ -109,7 +109,7 @@ resources:
 
 ---
 
-## 3️⃣ الكشف المبكر والمراقبة باستخدام أدوات غيمة (Early Detection & Observability)
+## 3️⃣ الكشف المبكر والمراقبة باستخدام أدوات غنيمة (Early Detection & Observability)
 
 لكشف مشكلة الذاكرة قبل وصولها لمرحلة `OOMKilled`:
 
