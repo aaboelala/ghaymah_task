@@ -14,8 +14,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server main.go
 
 # Stage 2: Minimal runtime image using scratch (~10-15MB final image size)
-FROM scratch
-
+FROM alpine:3.22
 # Copy CA certificates for HTTPS requests if needed
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
